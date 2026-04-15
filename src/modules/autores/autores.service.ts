@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { atualizarAutorDto, criarAutorDto } from './autores.dto';
+import { string } from 'drizzle-orm/cockroach-core';
 
 let autores = [
   {
