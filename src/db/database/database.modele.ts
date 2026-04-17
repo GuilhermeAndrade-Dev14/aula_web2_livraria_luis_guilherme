@@ -1,6 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { DATABASE_URL, DRIZZLE } from './database.constants';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from 'drizzle-orm/node-mssql';
 import { connect } from 'mssql';
 import type { config as MsSqlConfig } from 'mssql';
 import * as schema from '../schemas/index';
@@ -17,7 +17,7 @@ import * as schema from '../schemas/index';
           port: 1433,
           user: 'alunos_des225',
           password: '123',
-          database: '/des225_luis',
+          database: 'des225_luis',
           options: {
             encrypt: false,
             trustServerCertificate: true,

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { atualizarAutorDto, criarAutorDto } from './autores.dto';
 import { string } from 'drizzle-orm/cockroach-core';
+import { AutoresRepository } from './autores.repository';
 
 let autores = [
   {
@@ -26,9 +27,12 @@ let autores = [
 
 @Injectable()
 export class AutoresService {
- listarAutores() {
- return autores;
- }
+  constructor (private readonly autoresRepository: AutoresRepository) {}
+
+  async listarAutores (){
+    return await this.autoresRepository.listarAutores();
+  }
+  
   listarAutor(id: number) {
     const autorEncontrado = autores.find((autor) => autor.id === id);
 
