@@ -4,9 +4,9 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { DRIZZLE } from 'src/db/database/database.constants';
+import { livrosTabela } from 'src/db/schemas';
 import type { DrizzleDB } from 'src/db/types/drizzleDB';
-import { livrosTabela } from 'src/db/schemas/livros';
-
+import { CriarLivroDto } from './livros.dto';
 @Injectable()
 export class LivrosRepository {
   constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
@@ -18,6 +18,19 @@ export class LivrosRepository {
       return livros;
     } catch (error) {
       throw new InternalServerErrorException('Erro ao listar livros');
+    }
+  }
+  async criarLivro(boryRequest: CriarLivroDto) {
+    try {
+      await this.db.insert(livrosTabela).values({
+        idAutor: boryRequest.titulo.id_autor,
+        titulo: boryRequest.titulo.titulo,
+        descricao: boryRequest.titulo.descricao,
+      });
+
+      return `Livro ${boryRequest.titulo} criado com sucesso`;
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao criar livro');
     }
   }
 }

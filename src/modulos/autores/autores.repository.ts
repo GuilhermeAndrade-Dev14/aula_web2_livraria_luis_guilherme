@@ -14,7 +14,11 @@ export class AutoresRepository {
   constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
 
   async listarAutores() {
-    return this.db.select().from(autoresTabela);
+    try {
+      return await this.db.select().from(autoresTabela);
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao listar autores');
+    }
   }
 
   async listarAutor(id: number) {
@@ -23,50 +27,61 @@ export class AutoresRepository {
         .select()
         .from(autoresTabela)
         .where(eq(autoresTabela.id, id));
+
       return autorEncontrado[0];
     } catch (error) {
       throw new InternalServerErrorException('Erro ao listar um autor');
     }
   }
+
   async criarAutor(bodyRequest: CriarAutorDto) {
     try {
       await this.db.insert(autoresTabela).values(bodyRequest);
+
       const autorCriado = await this.db
         .select()
         .from(autoresTabela)
         .where(eq(autoresTabela.email, bodyRequest.email));
+
       return autorCriado;
     } catch (error) {
-      throw new InternalServerErrorException('Erro ao criar autor.');
+      throw new InternalServerErrorException('Erro ao criar um autor');
     }
   }
 
   async atualizarAutor(id: number, bodyRequest: AtualizarAutorDto) {
     try {
-      const autorAtualizado = await this.db
+      await this.db
         .update(autoresTabela)
         .set(bodyRequest)
         .where(eq(autoresTabela.id, id));
-      return `Autor atualizado com sucesso: ${autorAtualizado}`;
+
+      return 'Autor atualizado com sucesso';
     } catch (error) {
-      throw new InternalServerErrorException('Erro ao atualizar autor.');
+      throw new InternalServerErrorException('Erro ao atualizar um autor');
     }
   }
 
   async deletarAutor(id: number) {
     try {
       await this.db.delete(autoresTabela).where(eq(autoresTabela.id, id));
-      return `Autor deletado com sucesso: ${id}`;
+
+      return 'Autor deletado com sucesso';
     } catch (error) {
-      throw new InternalServerErrorException('Erro ao deletar autor.');
+      throw new InternalServerErrorException('Erro ao deletar um autor');
     }
   }
 
-  // async inativarAutor(id: number) {
-  //   try {
-  //     await this.db.update(autoresTabela).set({ ativo: false }).where(eq(autoresTabela.id, id));
-  //     return `Autor inativado com sucesso: ${id}`;
-  //   } catch (error) {
-  //     throw new InternalServerErrorException('Erro ao inativar autor.');
-  //   }
+  async inativarAutor(id: number) {
+    try {
+      await this.db
+        .update(autoresTabela)
+        .set({ ativo: false })
+        .where(eq(autoresTabela.id, id));
+
+      return 'Autor inativado com sucesso';
+    } catch (error) {
+      throw new InternalServerErrorException('Erro ao inativar um autor');
+    }
+  }
 }

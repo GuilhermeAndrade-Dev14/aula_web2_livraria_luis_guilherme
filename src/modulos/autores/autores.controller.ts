@@ -13,7 +13,6 @@ import { AtualizarAutorDto, CriarAutorDto } from './autores.dto';
 
 @Controller('autores')
 export class AutoresController {
-  //injetando autoresService dentro da classe Autorescontroller
   constructor(private readonly autoresService: AutoresService) {}
 
   @Get('/listar-autores')
@@ -33,14 +32,13 @@ export class AutoresController {
 
   @Put('/atualizar-autor/:id')
   atualizarAutor(
-    @Param('id', ParseIntPipe /*transforma em inteiro*/) idAutor: number,
+    @Param('id', ParseIntPipe) idAutor: number,
     @Body() bodyRequest: AtualizarAutorDto,
   ) {
     return this.autoresService.atualizarAutor(idAutor, bodyRequest);
   }
 
   @Delete('/deletar-autor/:id')
-  // ParseIntPipe transforma o id string em número
   deletarAutor(@Param('id', ParseIntPipe) idAutor: number) {
     return this.autoresService.deletarAutor(idAutor);
   }
